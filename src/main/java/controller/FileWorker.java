@@ -7,28 +7,28 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class FileWorker {
 
     public List<String> getFileContentAsList(String fileName) throws IOException {
-        Stream<String> stream = Files.lines(Paths.get(fileName));
-        return stream.collect(Collectors.toList());
+        return Files.readAllLines(Paths.get(fileName));
     }
 
     public void writeTicketsToFile(String fileName, List<String> ticketList) throws IOException {
         Files.write(new File(fileName).toPath(), ticketList);
     }
 
-    public TicketCounter getAlgorithm(List<String> stringList, String moskowAlg, String piterAlg) throws NoAlgorithmException {
+    public String getAlgorithm(List<String> stringList, String moskowAlg, String piterAlg) throws NoAlgorithmException {
+        String algorithm = null;
         for (String line : stringList) {
             if (line.contains(moskowAlg)) {
-                return new MoscowTicketCounter();
+                algorithm = moskowAlg;
             } else if (line.contains(piterAlg)) {
-                return new PiterTicketCounter();
+                algorithm = piterAlg;
             }
         }
-        throw new NoAlgorithmException(moskowAlg + " and " + piterAlg + " were not found in file");
+        if (algorithm == null)
+            throw new NoAlgorithmException("Algorithm was not found");
+        return algorithm;
     }
 }

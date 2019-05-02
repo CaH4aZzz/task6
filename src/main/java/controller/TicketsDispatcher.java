@@ -20,29 +20,57 @@ public class TicketsDispatcher {
         this.ticketGenerator = ticketGenerator;
     }
 
-    public void start() {
-        createAndWriteTicketsToFile();
+    public void start() throws IOException, NoAlgorithmException {
         try {
-            List<String> ticketList = fileWorker.getFileContentAsList("tickets.txt");
-            consoleWorker.printMessage("Where to find algorithm?");
-            String filePath = consoleWorker.getUserInput();
-            TicketCounter ticketCounter = chooseAlgorithm(filePath);
-            consoleWorker.printMessage("[ " + ticketCounter.getHappyTicketsCount(ticketList) + " ] HappyTicket(s) had been found");
+            createFileWithTickets();
+            List<String> ticketList = getTicketList();
+            TicketCounter ticketCounter = getTicketCounter();
+            showTicketCount(ticketCounter.getHappyTicketsCount(ticketList));
         } catch (NoAlgorithmException | IOException e) {
-            consoleWorker.printException(e);
+            throw e;
         }
     }
 
-    private TicketCounter chooseAlgorithm(String filePath) throws NoAlgorithmException, IOException {
-        return fileWorker.getAlgorithm(fileWorker.getFileContentAsList(filePath), MOSCOW, PITER);
+    private List<String> getTicketList() throws IOException {
+        consoleWorker.printMessage("Please enter path to the file with tickets in format <fileName.txt>");
+        List<String> ticketList;
+        try {
+            ticketList = fileWorker.getFileContentAsList(consoleWorker.getUserInput());
+        } catch (IOException e) {
+            consoleWorker.printException(e);
+            throw e;
+        }
+        return ticketList;
     }
 
-    private void createAndWriteTicketsToFile() {
+    private TicketCounter getTicketCounter() throws IOException, NoAlgorithmException {
+
+        consoleWorker.printMessage("Where to find algorithm?");
+        String filePath;
+        String algorithm;
+        filePath = consoleWorker.getUserInput();
+        algorithm = fileWorker.getAlgorithm(fileWorker.getFileContentAsList(filePath), MOSCOW, PITER);
+        TicketCounter ticketCounter = null;
+        if (algorithm.equals(MOSCOW)) {
+            ticketCounter = new MoscowTicketCounter();
+        } else if (algorithm.equals(PITER)) {
+            ticketCounter = new PiterTicketCounter();
+        }
+
+        return ticketCounter;
+    }
+
+    private void createFileWithTickets() throws IOException {
         List<String> list = ticketGenerator.generateTicketsList(1000, 6);
         try {
             fileWorker.writeTicketsToFile("tickets.txt", list);
         } catch (IOException e) {
-            e.printStackTrace();
+            consoleWorker.printException(e);
+            throw e;
         }
+    }
+
+    private void showTicketCount(int ticketCount) {
+        consoleWorker.printMessage("[ " + ticketCount + " ] HappyTicket(s) had been found");
     }
 }

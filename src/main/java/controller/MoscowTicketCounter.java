@@ -2,19 +2,10 @@ package controller;
 
 import java.util.List;
 
-public class MoscowTicketCounter implements TicketCounter {
+public class MoscowTicketCounter extends TicketCounter {
 
-    public int getHappyTicketsCount(List<String> ticketList) {
-        int happyCounter = 0;
-        for (String ticket : ticketList) {
-            if (isHappyTicket(ticket)) {
-                happyCounter++;
-            }
-        }
-        return happyCounter;
-    }
 
-    private boolean isHappyTicket(String ticket) {
+    protected boolean isHappyTicket(String ticket) {
         int firstHalf = Integer.parseInt(ticket.substring(0, ticket.length() / 2));
         int secondHalf = Integer.parseInt(ticket.substring(ticket.length() / 2, ticket.length()));
 

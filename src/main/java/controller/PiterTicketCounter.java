@@ -2,46 +2,25 @@ package controller;
 
 import java.util.List;
 
-public class PiterTicketCounter implements TicketCounter {
-    private final static boolean isEven = true;
-    private final static boolean isOdd = false;
+public class PiterTicketCounter extends TicketCounter {
+    private final static boolean EVEN = true;
+    private final static boolean ODD = false;
 
-    @Override
-    public int getHappyTicketsCount(List<String> ticketList) {
-        int happyCounter = 0;
-        for (String ticket : ticketList) {
-            if (isHappyTicket(ticket)) {
-                happyCounter++;
-            }
-        }
-        return happyCounter;
-    }
 
-    private boolean isHappyTicket(String ticket) {
-        int even = getEvenOrOdd(ticket, isEven);
-        int odd = getEvenOrOdd(ticket, isOdd);
-        System.out.println(even);
-        System.out.println(odd);
+    protected boolean isHappyTicket(String ticket) {
+        int even = getEvenOrOdd(ticket, EVEN);
+        int odd = getEvenOrOdd(ticket, ODD);
         return getSumOfEvenOrOdd(even) == getSumOfEvenOrOdd(odd);
     }
 
     private int getEvenOrOdd(String ticket, boolean isEven) {
         StringBuilder sb = new StringBuilder();
         char[] ticketArray = ticket.toCharArray();
-        if (isEven) {
             for (int i = 0; i < ticketArray.length; i++) {
-                if (i % 2 == 0) {
+                if (i % 2 == 0 == isEven) {
                     sb.append(ticketArray[i]);
                 }
             }
-        } else {
-            for (int i = 0; i < ticketArray.length; i++) {
-                if (i % 2 != 0) {
-                    sb.append(ticketArray[i]);
-                }
-            }
-        }
-
         return Integer.parseInt(sb.toString());
     }
 
