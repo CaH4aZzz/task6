@@ -13,10 +13,6 @@ public class Main {
     public static void main(String[] args) throws IOException, NoAlgorithmException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         TicketsDispatcher dispatcher = new TicketsDispatcher(new FileWorker(), new ConsoleWorker(reader), new TicketGenerator());
-        try {
-            dispatcher.start();
-        }catch (Exception e){
-            throw e;
-        }
+        dispatcher.start();
     }
 }

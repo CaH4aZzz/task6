@@ -11,7 +11,13 @@ import java.util.List;
 public class FileWorker {
 
     public List<String> getFileContentAsList(String fileName) throws IOException {
-        return Files.readAllLines(Paths.get(fileName));
+        List<String> stringOnFile = null;
+        try {
+            stringOnFile = Files.readAllLines(Paths.get(fileName));
+        } catch (IOException e) {
+            throw new IOException("File < " + fileName + " > was not found");
+        }
+        return stringOnFile;
     }
 
     public void writeTicketsToFile(String fileName, List<String> ticketList) throws IOException {
